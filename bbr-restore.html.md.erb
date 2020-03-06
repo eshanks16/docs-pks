@@ -3,7 +3,7 @@ title: Restoring Enterprise PKS
 owner: PKS
 ---
 
-This topic describes how to use BOSH Backup and Restore (BBR) to restore the BOSH Director, and the <%= vars.product_full %> Control Plane and Clusters.
+This topic describes how to use BOSH Backup and Restore (BBR) to restore the BOSH Director, and the <%= vars.product_full %> control plane and Clusters.
 
 ##<a id="overview"></a> Overview
 
@@ -394,22 +394,74 @@ To restore the <%= vars.product_short %> control plane perform the following ste
     <p class="note"><strong>Note</strong>: You can use the optional <code>--debug</code> flag to enable debug logs. See the <a href="bbr-logging.html">BBR Logging</a> topic for more information.
 </p>
 
+## <a id='redeploy-restore-clusters'></a> Restore <%= vars.product_short %>-Provisioned Clusters
 
-## <a id='redeploy-restore-clusters'></a> Restore <%= vars.product_short %> Clusters
-After successfully restoring the <%= vars.product_short %> Control Plane, perform the following steps to 
-restore the <%= vars.product_short %> clusters provisioned by the control plane.
+After successfully restoring the <%= vars.product_short %> control plane,
+perform the following steps to restore your Kubernetes clusters provisioned by the control plane.
 
-### <a id='redeploy-clusters'></a> Redeploy PKS Clusters
+### <a id='redeploy-clusters'></a> Redeploy Clusters
 
-Before restoring, you must redeploy your PKS Clusters by performing the following steps:
+Before restoring your PKS-provisioned clusters, you must redeploy them.
+To redeploy PKS-provisioned clusters:
 
-1. Navigate to an Pivotal Container Service tile in the **Installation Dashboard**.
-1. Select the **Errands** tab.
+* If you want to redeploy all clusters simultaneously,
+see [Redeploy All Clusters](#redeploy-all-clusters).
+* If you want to redeploy one or more clusters individually,
+see [Redeploy Clusters Individually](#redeploy-one-cluster).
+
+#### <a id='redeploy-all-clusters'></a> Redeploy All Clusters
+
+To redeploy all clusters:
+
+1. In Ops Manager, navigate to the <%= vars.product_short %> tile.
+1. Click **Errands**.
 1. Ensure the **Upgrade all clusters** errand is **On**.
+This errand redeploys all your clusters.
 1. Return to the **Installation Dashboard**.
-1. Click **Review Pending Changes**, review your changes, and then click **Apply Changes**. For more information, see [Reviewing Pending Product Changes](https://docs.pivotal.io/pivotalcf/2-6/customizing/review-pending-changes.html).
-This will include running the **Upgrade all clusters** errand, which will redeploy the cluster instances.
+1. Click **Review Pending Changes**, review your changes, and then click **Apply Changes**.
+For more information, see [Reviewing Pending Product Changes](https://docs.pivotal.io/pivotalcf/2-6/customizing/review-pending-changes.html).
 
+#### <a id='redeploy-all-clusters'></a> Redeploy Clusters Individually
+
+If you want do redeploy one cluster at a time,
+you can use either the PKS CLI or the BOSH CLI.
+
+* To redeploy a cluster through the PKS CLI:
+  1. Log in to the PKS CLI.
+  1. Run the following command:
+    
+      ```
+      pks upgrade-cluster CLUSTER-NAME
+      ```
+      Where `CLUSTER-NAME` is the name of your cluster.
+      Run this command for each cluster you want to redeploy.
+      For more information, see [Upgrade Clusters](upgrade-clusters.html#upgrade-clusters).
+
+* To redeploy a cluster through the BOSH CLI:
+  1. Run `bosh deployments` to identify the names of your cluster deployments. 
+  Cluster deployment names start with `service-instance_`.
+  1. For each cluster you want to redeploy, do the following:
+    1. Download the cluster deployment manifest:
+      
+      ```
+      bosh -d CLUSTER-ID manifest > /tmp/deployment-manifest.yml
+      ```
+    1. Deploy the cluster:
+      
+      ```
+      bosh -d CLUSTER-ID deploy deployment-manifest.yml
+      ```
+    1. Run all errands needed for your cluster:
+
+       ```
+       bosh run-errand  -d CLUSTER-ID ERRAND-NAME
+       ```
+       
+       For example:
+
+       ```
+       bosh run-errand  -d service-instance_d76ac30c-d7f3-449f-b408-78dff1480c08 apply-addons
+       ```
 ### <a id='restore-clusters'></a> Restore Clusters
 
 Perform the steps below to restore a cluster.
