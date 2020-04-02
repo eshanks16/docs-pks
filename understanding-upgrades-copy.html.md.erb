@@ -3,41 +3,77 @@ title: About Enterprise PKS Upgrades
 owner: PKS
 ---
 
-This topic compares full vs. tile-only <%= vars.product_short %> upgrades and explains what happens when the <%= vars.product_short %> control plane upgrades.
-It also explains how to perform a tile-only upgrade and what its limitations are.
+This topic provides conceptual information about <%= vars.product_short %> upgrades,
+including upgrading the PKS control plane and PKS-provisioned Kubernetes clusters.
+
+For step-by-step instructions on upgrading <%= vars.product_short %>, see:
+
+* [Upgrading Enterprise PKS](upgrade-pks.html)
+* [Upgrading Enterprise PKS with NSX-T](upgrade-pks-nsxt.html)
+* [Upgrading Clusters](upgrade-clusters.html)
 
 ## <a id="overview"></a>Overview
 
-An <%= vars.product_short %> upgrade modifies the version of the <%= vars.product_tile %> tile and automatically migrates your configuration settings into the new tile version.
+An <%= vars.product_short %> upgrade modifies the version of <%= vars.product_short %>,
+for example, from v1.6.x to v1.7.0 or from v1.7.0 to v1.7.1.
 
-By default, an <%= vars.product_short %> upgrade performs a _full upgrade_, which upgrades the control plane VMs and all <%= vars.product_short %>-provisioned Kubernetes clusters.
-You can optionally perform a _tile-only_ upgrade, which upgrades the control plane VMs only.
-With a tile-only upgrade, you must upgrade your <%= vars.product_short %>-provisioned Kubernetes clusters later.
+By default, <%= vars.product_short %> is set to perform a full upgrade,
+which upgrades both the PKS control plane and all PKS-provisioned Kubernetes clusters.
 
-For information about upgrading <%= vars.product_short %>, see [Upgrading <%= vars.product_short %>](upgrade-pks.html). 
-For information about upgrading <%= vars.product_short %> Kubernetes clusters, see [Upgrading Clusters](upgrade-clusters.html).  
+However, you can choose to upgrade <%= vars.product_short %> in two phases
+by upgrading the PKS control plane first and
+then upgrading your PKS-provisioned clusters later.
 
-## <a id="types"></a>Full vs Tile-Only Upgrades
+Both the full upgrade and the PKS control plane upgrade are performed
+through the <%= vars.product_tile %> tile only.
+When upgrading PKS-provisioned clusters, you can use either the PKS tile or the PKS CLI.
+See the table below.
 
-There are two types of <%= vars.product_short %> upgrades:
+<table>
+<col width="50%">
+<col width="25%">
+<col width="25%">
+  <tr>
+    <th rowspan=2>Upgrade type</th>
+    <th colspan=2 style="text-align:center">Upgrade method</th>    
+  </tr>
+  <tr>
+    <th>PKS Tile</th>
+    <th>PKS CLI</th>    
+  </tr>
+  <tr>
+    <td>Full PKS upgrade</td>
+    <td>&#10004;</td>
+    <td>&#10006;</td>
+  </tr>
+  <tr>
+    <td>PKS control plane only</td>
+    <td>&#10004;</td>
+    <td>&#10006;</td>
+  </tr>
+  <tr>
+    <td>Kubernetes clusters only</td>
+    <td>&#10004;</td>
+    <td>&#10004;</td>
+  </tr>
+</table>
 
-* **Full Upgrade** upgrades the <%= vars.product_tile %> control plane and all <%= vars.product_short %>-provisioned Kubernetes clusters.
-  - This is the default behavior of the <%= vars.product_tile %> tile.
+Typically, if you choose to upgrade clusters only,
+you will upgrade them through the PKS CLI.
+The PKS CLI lets you upgrade subsets of clusters.
 
-* **Tile-Only Upgrade** upgrades only the <%= vars.product_tile %> control plane.
+## <a id=""></a>
 
-### <a id="choice"></a> Choosing Full or Tile-Only Upgrade
 
-Before you click **Apply Changes** to deploy an <%= vars.product_short %> upgrade, you can choose in the **Errands** pane whether or not to also upgrade all clusters:
 
-* Enable the **Upgrade all clusters errand** checkbox to perform a full upgrade.
-* Disable the **Upgrade all clusters errand** checkbox to upgrade the tile and control plane only.
-  - See the [Tile-Only Upgrade](#tile-only) instructions below for how to perform a tile-only <%= vars.product_tile %> upgrade.
-  - **Limitations** After performing a tile-only upgrade, 
-  you cannot perform another <%= vars.product_tile %> tile upgrade 
-  until you have upgraded your Kubernetes clusters to the current <%= vars.product_short %> version.  
 
 ## <a id="what-happens"></a> What Happens During Upgrade
+
+
+
+
+
+"and automatically migrates your configuration settings into the new tile version."
 
 During a <%= vars.product_short %> control plane upgrade to v1.7, the <%= vars.product_tile %> tile does the following:
 
@@ -53,6 +89,26 @@ This control plane recreation causes temporary outages as described in [Control 
   * Upgrading <%= vars.product_short %> only upgrades its Kubernetes clusters if the **Upgrade all clusters errand** checkbox is enabled in the **Errands** pane.
   * The cluster upgrade process recreates all clusters, which may cause cluster outages.  
   For more information, see the [What Happens During Cluster Upgrades](./upgrade-clusters.html#what) section of the _Upgrading Clusters_ topic.
+
+
+
+
+
+
+Full minor 1,2,3
+Full patch 2,3
+
+PKS control plane only minor 1,2
+PKS control plane only patch 2
+
+
+Clusters only minor (tile) 3
+Clusters only patch (tile) 3
+
+Cluster only CLI
+Cluster only CLI
+
+
 
 ### <a id="outages"></a> Control Plane Outages
 
@@ -78,6 +134,12 @@ BOSH continues the upgrade only if the canary instance upgrade succeeds.
 If the canary instance encounters an error, the upgrade stops running and other VMs are not affected.
 
 The <%= vars.product_tile %> tile uses one canary instance when deploying or upgrading <%= vars.product_short %>.
+
+
+"**Limitations** After performing a tile-only upgrade, 
+  you cannot perform another <%= vars.product_tile %> tile upgrade 
+  until you have upgraded your Kubernetes clusters to the current <%= vars.product_short %> version.  "
+
 
 ##<a id="tile-only"></a> Tile-Only Upgrade
 
