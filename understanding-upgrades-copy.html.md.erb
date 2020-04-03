@@ -86,6 +86,11 @@ the PKS CLI supports upgrading each cluster individually.
 
 * Better troubleshooting experience. Explanation.
 
+<p class="note warning"><strong>Warning:</strong> If you disable the default full upgrade
+and upgrade only the PKS control plane in the <%= vars.product_tile %>,
+you must upgrade all your Kubernetes clusters before the next <%= vars.product_short %>
+upgrade.</p>
+
 ## <a id="what-happens"></a> What Happens During Upgrades
 
 "and automatically migrates your configuration settings into the new tile version."
