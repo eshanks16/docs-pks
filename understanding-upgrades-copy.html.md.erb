@@ -22,11 +22,11 @@ which upgrades both the PKS control plane and all PKS-provisioned Kubernetes clu
 
 However, you can choose to upgrade <%= vars.product_short %> in two phases
 by upgrading the PKS control plane first and
-then upgrading your PKS-provisioned clusters later.
+then upgrading your PKS-provisioned Kubernetes clusters later.
 
 Both the full upgrade and the PKS control plane upgrade are performed
 through the <%= vars.product_tile %> tile only.
-When upgrading PKS-provisioned clusters, you can use either the PKS tile or the PKS CLI.
+When upgrading PKS-provisioned Kubernetes clusters, you can use either the <%= vars.product_tile %> tile or the PKS CLI.
 See the table below.
 
 <table>
@@ -58,20 +58,35 @@ See the table below.
   </tr>
 </table>
 
-Typically, if you choose to upgrade clusters only,
+Typically, if you choose to upgrade PKS-provisioned Kubernetes clusters only,
 you will upgrade them through the PKS CLI.
-The PKS CLI lets you upgrade subsets of clusters.
 
-## <a id=""></a>
+## <a id=""></a> Deciding Between Full and Two-Phase Upgrade
 
+Before deciding whether to perform the default full upgrade or
+to upgrade the PKS control plane and PKS-provisioned Kubernetes separately,
+consider your organization and <%= vars.product_short %> deployment needs.
+For example, if your organization runs PKS-provisioned Kubernetes clusters
+in both development and production environments and you want to upgrade
+only one of the environments first, you can achieve your goal by
+upgrading the PKS control plane and PKS-provisioned Kubernetes separately
+instead of performing a full upgrade.
 
+Examples of other advantages of
+upgrading <%= vars.product_short %> in two phases include:
 
+* Faster <%= vars.product_tile %> tile upgrades.
+If you have a large number of clusters in your <%= vars.product_short %> deployment,
+performing a full upgrade can significantly increase the amount of time required to
+upgrade the <%= vars.product_tile %> tile.
 
-## <a id="what-happens"></a> What Happens During Upgrade
+* More granular control over cluster upgrades.
+In addition to enabling you to upgrade subsets of clusters,
+the PKS CLI supports upgrading each cluster individually.
 
+* Better troubleshooting experience. Explanation.
 
-
-
+## <a id="what-happens"></a> What Happens During Upgrades
 
 "and automatically migrates your configuration settings into the new tile version."
 
