@@ -6,7 +6,8 @@ owner: PKS
 This topic provides conceptual information about <%= vars.product_short %> upgrades,
 including upgrading the PKS control plane and PKS-provisioned Kubernetes clusters.
 
-For step-by-step instructions on upgrading <%= vars.product_short %>, see:
+For step-by-step instructions on upgrading <%= vars.product_short %>
+and PKS-provisioned Kubernetes clusters, see:
 
 * [Upgrading Enterprise PKS](upgrade-pks.html)
 * [Upgrading Enterprise PKS with NSX-T](upgrade-pks-nsxt.html)
@@ -64,11 +65,12 @@ you will upgrade them through the PKS CLI.
 ## <a id=""></a> Deciding Between Full and Two-Phase Upgrade
 
 When deciding whether to perform the default full upgrade or
-to upgrade the PKS control plane and PKS-provisioned Kubernetes separately,
-consider your organization and <%= vars.product_short %> deployment needs.
+to upgrade the PKS control plane and PKS-provisioned Kubernetes clusters separately,
+consider your organization needs.
+
 For example, if your organization runs PKS-provisioned Kubernetes clusters
 in both development and production environments and you want to upgrade
-only one of the environments first, you can achieve your goal by
+only one environment first, you can achieve your goal by
 upgrading the PKS control plane and PKS-provisioned Kubernetes separately
 instead of performing a full upgrade.
 
@@ -91,9 +93,12 @@ For example, when a cluster-related upgrade error occurs during a full upgrade,
 the entire <%= vars.product_tile %> tile upgrade may fail.
 
 <p class="note warning"><strong>Warning:</strong> If you disable the default full upgrade
-and upgrade only the PKS control plane in the <%= vars.product_tile %>,
+and upgrade only the PKS control plane in the <%= vars.product_tile %> tile,
 you must upgrade all your Kubernetes clusters before the next <%= vars.product_short %>
-upgrade. If your Kubernetes clusters fall more than one version behind the PKS control plane and the tile,
+upgrade. Disabling the default full upgrade
+and upgrading only the PKS control plane cause the PKS version
+tagged in your Kubernetes clusters to fall behind the <%= vars.product_tile %> tile version.
+If your Kubernetes clusters fall more than one version behind the tile,
 <%= vars.product_short %> cannot upgrade the clusters.</p>
 
 ## <a id="what-happens"></a> What Happens During Full PKS and PKS Control Plane Upgrades
