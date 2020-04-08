@@ -96,6 +96,11 @@ you must upgrade all your Kubernetes clusters before the next <%= vars.product_s
 upgrade. If your Kubernetes clusters fall more than one version behind the PKS control plane and the tile,
 <%= vars.product_short %> cannot upgrade the clusters.</p>
 
+All changes applied to the <%= vars.product_tile %> tile,
+must be propagated to your Kubernetes clusters before the next tile upgrade.
+Therefore, if you perform a tile-only <%= vars.product_tile %> upgrade, you must upgrade all your Kubernetes clusters
+before the next <%= vars.product_tile %> tile upgrade.
+
 ## <a id="what-happens"></a> What Happens During Full PKS and PKS Control Plane Upgrades
 
 You can perform full PKS upgrades and PKS control plane upgrades only
@@ -201,52 +206,3 @@ using a minimum of two worker nodes per AZ.
 it rolls every Linux or Windows VM in each Kubernetes cluster.
 This automatic rolling ensures that all your VMs are patched. To avoid workload downtime, use the resource configuration recommended in the <a href="#master-recreated">Master Nodes</a> and <a href="#worker-recreated">Worker Nodes</a> sections below and
 in <a href="./maintain-uptime.html">Maintaining Workload Uptime</a>.</p>
-__________
-
-##<a id="tile-only"></a> Tile-Only Upgrade
-
-To perform a tile-only <%= vars.product_tile %> upgrade, in order to upgrade your control plane without upgrading your clusters yet, do the following:
-
-  1. Review [Limitations](#limitations).
-  1. Complete the steps listed in [Prerequisites](#prerequisites).
-  1. Complete the steps listed in [Disable Errand and Apply Changes](#modify-apply).
-
-  <p class="note"><strong>Note:</strong> Tile-only upgrades cause the <%= vars.k8s_runtime_abbr %> version tagged in Kubernetes clusters to fall behind the <%= vars.product_short %> tile version.
-    If the clusters fall more than one version behind the tile,
-    <%= vars.product_short %> cannot upgrade the clusters.</p>
-
-###<a id='limitations'></a> Limitations
-
-After performing a tile-only <%= vars.product_tile %> upgrade, 
-you cannot perform another <%= vars.product_tile %> upgrade until you upgrade your clusters.  
-
-To simultaneously upgrade your <%= vars.product_tile %>
-tile and existing Kubernetes clusters,
-do not disable **Upgrade all clusters errand** in the <%= vars.product_tile %> tile.
-
-###<a id='prerequisites'></a>Prerequisites
-
-Before performing a tile-only <%= vars.product_tile %> upgrade, you must do the following:
-
-* Install the PKS command line interface (CLI) v1.7. For more information, see [Installing the PKS CLI](installing-pks-cli.html).
-1. Download the new <%= vars.product_short %> product file from [VMware Tanzu Network](https://network.pivotal.io/products/pivotal-container-service) and import it into the Ops Manager **Installation Dashboard**.
-* Log in to <%= vars.product_short %> using `pks login`. For more information, see [Logging in to <%= vars.product_short %>](login.html).
-
-###<a id='errand-apply'></a> Disable Errand and Apply Changes
-
-To perform the tile-only <%= vars.product_short %> upgrade:
-
-1. In the <%= vars.product_short %> tile, navigate to the **Errands** pane.
-1. Disable **Upgrade all clusters errand** and click **Save**.
-1. Return to the Ops Manager **Installation Dashboard** and click **Review Pending Changes**.
-1. Select <%= vars.product_short %> and any other products that you want to deploy and click **Apply Changes**.
-
-##<a id="after"></a> After a Tile-Only Upgrade
-
-All changes applied to the <%= vars.product_tile %> tile, including upgrades and configuration changes,
-must be propagated to your Kubernetes clusters before the next tile upgrade.
-Therefore, if you perform a tile-only <%= vars.product_tile %> upgrade, you must upgrade all your Kubernetes clusters
-before the next <%= vars.product_tile %> tile upgrade.
-
-
-
