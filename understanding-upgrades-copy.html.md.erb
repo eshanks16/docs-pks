@@ -110,7 +110,7 @@ For more information, see:
 * [Full PKS Upgrades](#full-upgrades)
 * [PKS Control Plane Upgrades](#control-plane-upgrades)
 
-### <a id="full-upgrades"></a>Full PKS Upgrades
+### <a name="full-upgrades"></a>Full PKS Upgrades
 
 During a **full PKS upgrade**,
 the <%= vars.product_tile %> tile does the following:
@@ -129,14 +129,14 @@ This control plane upgrade causes temporary outages as described in [Control Pla
   * The cluster upgrade process recreates all clusters, which may cause cluster outages.
   For more information, see the [What Happens During Cluster Upgrades](./upgrade-clusters.html#what) section of the _Upgrading Clusters_ topic.
 
-### <a id="control-plane-upgrades"></a>PKS Control Plane Upgrades
+### <a name="control-plane-upgrades"></a>PKS Control Plane Upgrades
 
 When upgrading the **PKS control plane only**,
 the <%= vars.product_tile %> tile follows the process described in
 [Full PKS Upgrades](#full-upgrades) above, step 1 and 2.
 It does not upgrade PKS-provisioned Kubernetes clusters, step 3.
 
-### <a id="canary"></a>Canary Instances
+### <a name="canary"></a>Canary Instances
 
 The <%= vars.product_tile %> tile is a BOSH deployment.
 
@@ -146,7 +146,7 @@ If the canary instance encounters an error, the upgrade stops running and other 
 
 The <%= vars.product_tile %> tile uses one canary instance when deploying or upgrading <%= vars.product_short %>.
 
-#### <a id="outages"></a> Control Plane Outages
+#### <a name="outages"></a> Control Plane Outages
 
 Upgrading the <%= vars.product_short %> control plane temporarily interrupts the following:
 
@@ -178,7 +178,7 @@ Depending on your cluster configuration,
 these recreations may cause [Master Nodes Outage](#master) or [Worker Nodes Outage](#worker)
 as described below.
 
-###<a id="master"></a>Master Nodes Outage
+###<a name="master"></a>Master Nodes Outage
 
 When <%= vars.product_short %> upgrades a single-master cluster,
 you cannot interact with your cluster, use `kubectl`, or push new workloads.
@@ -186,7 +186,7 @@ you cannot interact with your cluster, use `kubectl`, or push new workloads.
 To avoid this loss of functionality,
 <%= vars.recommended_by %> recommends using multi-master clusters.
 
-###<a id="worker"></a>Worker Nodes Outage
+###<a name="worker"></a>Worker Nodes Outage
 
 When <%= vars.product_short %> upgrades a worker node,
 the node stops running containers.
