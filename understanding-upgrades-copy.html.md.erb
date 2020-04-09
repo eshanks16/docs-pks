@@ -165,21 +165,45 @@ If the canary instance encounters an error, the upgrade stops running and other 
 
 The <%= vars.product_tile %> tile uses one canary instance when deploying or upgrading <%= vars.product_short %>.
 
-
-
 ## <a id="cluster-upgrades"></a>What Happens During Cluster Upgrades
 
 Upgrading PKS-provisioned Kubernetes clusters
 updates their Kubernetes version to the version
-shipped with the <%= vars.product_tile %> tile.
+included with the <%= vars.product_tile %> tile.
+It also updates the PKS version tagged in your clusters
+to the <%= vars.product_tile %> tile version.
+
+You can upgrade PKS-provisioned Kubernetes clusters either through the <%= vars.product_tile %> tile
+or the PKS CLI. See the table below.
+
+<table>
+<col width="50%">
+<col width="50%">
+  <tr>
+    <th>This method</th>
+    <th>Upgrades</th>
+  </tr>
+  <tr>
+    <td>The <strong>Upgrade all clusters errand</strong> in<br>
+    the <strong><%= vars.product_tile %></strong> tile > <strong>Errands</strong></td>
+    <td>All clusters. Clusters are upgraded serially.</td>
+  </tr>
+  <tr>
+    <td><code>pks upgrade-cluster</code></td>
+    <td>One cluster.</td>
+  </tr>
+  <tr>
+    <td><code>pks upgrade-clusters</code></td>
+    <td>Multiple clusters. Clusters are upgraded serially or in parallel.</td>
+  </tr>
+</table>
 
 During an upgrade of PKS-provisioned clusters,
-performed either during a full PKS upgrade or separately through the PKS CLI,
-<%= vars.product_short %> recreates your clusters, one at a time.
-This includes the following stages for each cluster you upgrade:
+<%= vars.product_short %> recreates your clusters.
+This includes includes the following stages for each cluster you upgrade:
 
-1. Master nodes are upgraded.
-1. Worker nodes are upgraded.
+1. Master nodes are recreated.
+1. Worker nodes are recreated.
 
 Depending on your cluster configuration,
 these recreations may cause [Master Nodes Outage](#master) or [Worker Nodes Outage](#worker)
@@ -200,11 +224,16 @@ the node stops running containers.
 If your workloads run on a single node, they will experience downtime.
 
 To avoid downtime for stateless workloads,
-<%= vars.recommended_by %> recommends using at least one worker node per availability zone (AZ).
+<%= vars.recommended_by %> recommends using at least one worker node
+per availability zone (AZ).
 For stateful workloads, <%= vars.recommended_by %> recommends
 using a minimum of two worker nodes per AZ.
 
-<p class="note"><strong>Note</strong>: When <%= vars.product_short %> performs a full upgrade and upgrades <%= vars.product_short %>-provisioned clusters with a new Linux or Windows stemcell,
-it rolls every Linux or Windows VM in each Kubernetes cluster.
-This automatic rolling ensures that all your VMs are patched. To avoid workload downtime, use the resource configuration recommended in the <a href="#master-recreated">Master Nodes</a> and <a href="#worker-recreated">Worker Nodes</a> sections below and
+<p class="note"><strong>Note:</strong> When the <strong>Upgrade all clusters errand</strong>
+is enabled in the <%= vars.product_tile %> tile, updating the tile with
+a new Linux or Windows stemcell rolls every Linux or Windows VM in each Kubernetes cluster.
+This automatic rolling ensures that all your VMs are patched.
+To avoid workload downtime, use the resource configuration recommended
+in <a href="#master">Master Nodes Outage</a>
+and <a href="#worker">Worker Nodes Outage</a> above and
 in <a href="./maintain-uptime.html">Maintaining Workload Uptime</a>.</p>
