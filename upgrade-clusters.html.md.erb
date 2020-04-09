@@ -18,13 +18,13 @@ see [About <%= vars.product_short %> Upgrades](understanding-upgrades.html).
 
 ## <a id="overview"></a>Overview
 
-Upgrading a PKS-provisioned Kubernetes cluster upgrades
+Upgrading a PKS-provisioned Kubernetes cluster updates
 the <%= vars.product_short %> version and the Kubernetes version
 of the cluster.
 PKS-provisioned Kubernetes clusters upgrade when:
 
-* You upgrade the <%= vars.product_short %> tile
-with the **Errands** pane > **Upgrade all clusters errand** enabled.
+* You upgrade <%= vars.product_short %>
+with the **Upgrade all clusters errand** enabled in the **<%= vars.product_tile %>** tile > **Errands**.
 * You run `pks upgrade-cluster` or `pks upgrade-clusters`
 as described in [Upgrade Clusters](#upgrade-clusters) below.
 
@@ -51,7 +51,7 @@ clusters using the following procedures:
 * [Upgrade Multiple Kubernetes Clusters](#upgrade-clusters-multi)
 
 To monitor or stop a cluster upgrade, follow the procedures in 
-[Manage Your Kubernetes Cluster Upgrade Job](#manage-upgrade), below.
+[Manage Your Kubernetes Cluster Upgrade Job](#manage-upgrade) below.
 
 ###<a id='upgrade-cluster'></a>Upgrade a Single Cluster
 
@@ -66,7 +66,7 @@ pks upgrade-cluster CLUSTER-NAME
 ```
 Where `CLUSTER-NAME` is the name of the Kubernetes cluster you want to upgrade.
 
-To upgrade multiple clusters, see [Upgrade Multiple Kubernetes Clusters](#upgrade-clusters-multi), below.  
+To upgrade multiple clusters, see [Upgrade Multiple Kubernetes Clusters](#upgrade-clusters-multi) below.  
 
 For more information about the `pks upgrade-cluster` command, see [pks upgrade-cluster](cli/index.html#upgrade-cluster) in the _PKS CLI_ documentation.    
 
