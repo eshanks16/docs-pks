@@ -8,13 +8,17 @@ use to capture logs and metrics about your Kubernetes nodes and workloads.
 
 ## <a id='overview'></a>Overview
 
-To monitor your Kubernetes nodes and workloads in your <%= vars.product_short %>
+To monitor Kubernetes nodes and workloads in your <%= vars.product_short %>
 environment, you can enable one or more of the following components and
-integrations:
+integrations in the **<%= vars.product_tile %>** tile >
+**In-Cluster Monitoring**:
 
-* **Sink resources.** See [<%= vars.product_short %> Components](#components)
-below.
-* 
+* **Sink resources.** For more information about these <%= vars.product_short %>
+components, see
+[<%= vars.product_short %> Components](#components) below.
+* **Wavefront integration** and **cAdvisor integration.** For more information
+about these integrations, see
+[Supported Integrations](#integrations) below.
 
 ## <a id='components'></a> <%= vars.product_short %> Components
 
@@ -24,14 +28,13 @@ monitor your Kubernetes nodes and workloads.
 To deploy a log or a metric sink:
 
 1. Enable sink resources in the <%= vars.product_tile %> tile.
-For instructions, see
-[Log Sink Resources](installing-pks-vsphere.html#log-sinks) and
-[Metric Sink Resources](installing-pks-vsphere.html#metric-sinks) in:
-  * [Installing Enterprise PKS on vSphere](installing-vsphere.html#uaa)
-  * [Installing Enterprise PKS on vSphere with NSX-T](installing-nsx-t.html#uaa)
-  * [Installing Enterprise PKS on GCP](installing-gcp.html#uaa)
-  * [Installing Enterprise PKS on AWS](installing-aws.html#uaa)
-  * [Installing Enterprise PKS on Azure](installing-azure.html#uaa)
+For instructions, see _Log Sink Resources_ and _Metric Sink Resources_ in:
+
+  * [Installing Enterprise PKS on vSphere](installing-vsphere.html#cluster-monitoring)
+  * [Installing Enterprise PKS on vSphere with NSX-T](installing-nsx-t.html#cluster-monitoring)
+  * [Installing Enterprise PKS on GCP](installing-gcp.html#cluster-monitoring)
+  * [Installing Enterprise PKS on AWS](installing-aws.html#cluster-monitoring)
+  * [Installing Enterprise PKS on Azure](installing-azure.html#cluster-monitoring)
 
 1. Create sink resources. For instructions, see
 [Creating Sink Resources](create-sinks.html).
@@ -46,11 +49,16 @@ Also see:
 <%= vars.product_short %> supports the following integrations for monitoring
 Kubernetes nodes and workloads:
 
-* **Wavefront.** To configure Wavefront integration, see
-[Wavefront](installing-pks-vsphere.html#wavefront) in the
-_Installing <%= vars.product_short %>_ topic for your IaaS.
-
+* Wavefront
   <p class="note"><strong>Note:</strong> You can also create a metric sink
   to send metrics to Wavefront.</p>
+* cAdvisor
 
-* **cAdvisor.** To configure cAdvisor integration, see
+To configure Wavefront and cAdvisor integration, see
+_Wavefront_ and _cAdvisor_ in:
+
+* [Installing Enterprise PKS on vSphere](installing-vsphere.html#cluster-monitoring)
+* [Installing Enterprise PKS on vSphere with NSX-T](installing-nsx-t.html#cluster-monitoring)
+* [Installing Enterprise PKS on GCP](installing-gcp.html#cluster-monitoring)
+* [Installing Enterprise PKS on AWS](installing-aws.html#cluster-monitoring)
+* [Installing Enterprise PKS on Azure](installing-azure.html#cluster-monitoring)
