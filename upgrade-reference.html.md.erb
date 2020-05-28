@@ -1,25 +1,56 @@
 ---
-title: Upgrade Scenarios for TKGI v1.8 on vSphere
+title: Upgrade Scenarios for Tanzu Kubernetes Grid Integrated Edition v1.8 on vSphere
 owner: TKGI
 ---
 
-This topic provides examples of upgrade scenarios for TKGI installations
-that are upgraded from v1.7 to v1.8 on vSphere.
+This topic provides examples of upgrade scenarios for
+<%= vars.product_full %>
+installations that are upgraded from v1.7 to v1.8 on vSphere.
 
 ## <a id="overview"></a>Overview
 
-Description
+You can deploy <%= vars.product_short %> (<%= vars.k8s_runtime_abbr %>) on
+vSphere with either NSX-T or Flannel networking.
 
-## <a id="nsxt"></a>TKGI on vSphere with NSX-T Networking
+* For examples of upgrade scenarios with NSX-T
+networking, see
+[<%= vars.k8s_runtime_abbr %> on vSphere with NSX-T Networking](#nsxt) below.
+* For examples of upgrade scenarios with
+Flannel networking, see
+[<%= vars.k8s_runtime_abbr %> on vSphere with Flannel Networking](#flannel)
+below.
 
-### <a id="tkgi-only"></a>Scenario 1: Upgrading TKGI to v1.8
+## <a id="nsxt"></a><%= vars.product_short %> on vSphere with NSX-T Networking
 
-In this scenario, you upgrade TKGI from v1.7 to v1.8.
-If you have not already done so, upgrade NSX-T to v2.5 before upgrading to
-TKGI v1.8. For a list of NSX-T versions
-compatible with <%= vars.product_short %> v1.8,
-see [Product Snapshot](release-notes.html) in
-_Release Notes_.
+When upgrading <%= vars.product_short %> on vSphere with NSX-T networking,
+you can choose one of the following upgrade scenarios:
+
+* Upgrade <%= vars.product_short %> only and do not upgrade your NSX-T or
+vSphere infrastructure. See
+[Scenario 1: Upgrading <%= vars.k8s_runtime_abbr %> to v1.8](#tkgi-only) below.
+* Upgrade <%= vars.product_short %> and NSX-T infrastructure. See
+[Upgrading to <%= vars.k8s_runtime_abbr %> v1.8 and NSX-T v3.0.1](#tkgi-nsxt)
+below.
+* Upgrade <%= vars.product_short %>, NSX-T, and vSphere
+infrastructure. See
+[Upgrading to <%= vars.k8s_runtime_abbr %> v1.8, NSX-T v3.0.1, and vSphere to v7.0](#tkgi-nsxt-vsphere)
+below.
+
+<p class="note"><strong>Note:</strong> Upgrading <%= vars.product_short %> often
+includes upgrading your Ops Manager.</p>
+
+### <a id="tkgi-only"></a>Scenario 1: Upgrading <%= vars.product_short %> to v1.8
+
+In this upgrade scenario, you upgrade <%= vars.product_short %>
+from v1.7 to v1.8 and do not upgrade your NSX-T or vSphere infrastructure.
+
+The upgrade scenario includes the following steps:
+
+1. (Optional) Upgrade Ops Manager.
+2. Upgrade <%= vars.product_short %> from v1.7 to v1.8.
+
+See the table below for version information and instructions related to this
+upgrade scenario:
 
 <table class="nice">
 <col width="15%">
@@ -27,15 +58,147 @@ _Release Notes_.
 <col width="20%">
 <col width="45%">
     <th>Component</th>
-    <th>Current version</th>
+    <th>Pre-upgrade version</th>
     <th>Post-upgrade version</th>
     <th>More information</th>
     <tr>
-        <td>NSX-T</td>
-        <td>2.4 or 2.5</td>
-        <td>2.5</td>
-        <td>See <a href="https://docs.pivotal.io/pks/1-7/upgrade-pks-nsxt.html#upgrade-nsxt">Upgrade NSX-T Data Center v2.4.3 to v2.5</a>.</td>
+        <td>Ops Manager</td>
+        <td>2.7, 2.8, or 2.9</td>
+        <td>2.7, 2.8, or 2.9</td>
+        <td>Check <a href="https://network.pivotal.io/products/pivotal-container-service/">Tanzu Network</a>
+        for patch compatibility.</td>
     </tr>
+    <tr>
+        <td><%= vars.k8s_runtime_abbr %></td>
+        <td>1.7</td>
+        <td>1.8</td>
+        <td>See <a href="upgrade-nsxt.html">Upgrading Tanzu Kubernetes Grid Integrated Edition (NSX-T Networking)</a>.</td>
+    </tr>
+    <tr>
+        <td>NSX-T<sup>&#42;</sup></td>
+        <td>2.5.0 or 2.5.1</td>
+        <td>2.5.0 or 2.5.1</td>
+        <td><em>n/a</em></td>
+    </tr>
+    <tr>
+        <td>vSphere</td>
+        <td>6.5 or 6.7</td>
+        <td>6.5 or 6.7</td>
+        <td><em>n/a</em></td>
+    </tr>
+</table>
+
+<sup>&#42;</sup> The scenario described in this section assumes that your
+Enterprise PKS v1.7 environment is running with NSX-T v2.5.
+If you have not already done so, upgrade to NSX-T v2.5 before following this
+upgrade scenario. See:
+
+* [Product Snapshot](release-notes.html) in _Release Notes_ for a list of
+NSX-T versions compatible with <%= vars.product_short %> v1.8
+* [Upgrade NSX-T Data Center v2.4.3 to v2.5](https://docs.pivotal.io/pks/1-7/upgrade-pks-nsxt.html#upgrade-nsxt)
+in the Enterprise PKS v1.7 documentation
+
+### <a id="tkgi-nsxt"></a>Scenario 2: Upgrading to <%= vars.k8s_runtime_abbr %> v1.8 and NSX-T v3.0.1
+
+<table class="nice">
+<col width="15%">
+<col width="20%">
+<col width="20%">
+<col width="45%">
+    <th>Component</th>
+    <th>Pre-upgrade version</th>
+    <th>Post-upgrade version</th>
+    <th>More information</th>
+    <tr>
+        <td>Ops Manager</td>
+        <td>2.7, 2.8, 2.9</td>
+        <td>2.9</td>
+        <td>Check <a href="https://network.pivotal.io/products/pivotal-container-service/">Tanzu Network</a>
+        for patch compatibility.</td>
+    </tr>
+    <tr>
+        <td><%= vars.k8s_runtime_abbr %></td>
+        <td>1.7</td>
+        <td>1.8</td>
+        <td>See <a href="upgrade-nsxt.html">Upgrading Tanzu Kubernetes Grid Integrated Edition (NSX-T Networking)</a>.</td>
+    </tr>
+    <tr>
+        <td>NCP</td>
+        <td>2.5.1</td>
+        <td>3.0.1</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>NSX-T</td>
+        <td>2.5.0 or 2.5.1</td>
+        <td>3.0.1</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>vSphere</td>
+        <td>6.5 or 6.7</td>
+        <td>6.5 or 6.7</td>
+        <td></td>
+    </tr>
+</table>
+
+### <a id="tkgi-nsxt-vsphere"></a>Scenario 3: Upgrading to <%= vars.k8s_runtime_abbr %> v1.8, NSX-T v3.0.1, and vSphere to v7.0
+
+<table class="nice">
+<col width="15%">
+<col width="20%">
+<col width="20%">
+<col width="45%">
+    <th>Component</th>
+    <th>Pre-upgrade version</th>
+    <th>Post-upgrade version</th>
+    <th>More information</th>
+    <tr>
+        <td>Ops Manager</td>
+        <td>2.7, 2.8, 2.9</td>
+        <td>2.9</td>
+        <td>Check <a href="https://network.pivotal.io/products/pivotal-container-service/">Tanzu Network</a>
+        for patch compatibility.</td>
+    </tr>
+    <tr>
+        <td><%= vars.k8s_runtime_abbr %></td>
+        <td>1.7</td>
+        <td>1.8</td>
+        <td>See <a href="upgrade-nsxt.html">Upgrading Tanzu Kubernetes Grid Integrated Edition (NSX-T Networking)</a>.</td>
+    </tr>
+    <tr>
+        <td>NCP</td>
+        <td>2.5.1</td>
+        <td>3.0.1</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>NSX-T</td>
+        <td>2.5.0 or 2.5.1</td>
+        <td>3.0.1</td>
+        <td>.</td>
+    </tr>
+    <tr>
+        <td>vSphere</td>
+        <td>6.5 or 6.7</td>
+        <td>7.0</td>
+        <td></td>
+    </tr>
+</table>
+
+## <a id="flannel"></a><%= vars.product_short %> on vSphere with Flannel Networking
+
+### <a id="tkgi-only"></a>Scenario 1: Upgrading <%= vars.k8s_runtime_abbr %> to v1.8
+
+<table class="nice">
+<col width="15%">
+<col width="20%">
+<col width="20%">
+<col width="45%">
+    <th>Component</th>
+    <th>Pre-upgrade version</th>
+    <th>Post-upgrade version</th>
+    <th>More information</th>
     <tr>
         <td>Ops Manager</td>
         <td>2.7, 2.8, 2.9</td>
@@ -44,39 +207,47 @@ _Release Notes_.
         for patch compatibility.</td>
     </tr>
     <tr>
-        <td>TKGI</td>
+        <td><%= vars.k8s_runtime_abbr %></td>
         <td>1.7</td>
         <td>1.8</td>
-        <td>See <a href="upgrade-nsxt.html">Upgrading Tanzu Kubernetes Grid Integrated Edition (NSX-T Networking)</a>.</td>
+        <td>See <a href="upgrade-pks.html">Upgrading Enterprise PKS (Flannel Networking)</a>.</td>
     </tr>
     <tr>
         <td>vSphere</td>
         <td>6.5 or 6.7</td>
         <td>6.5 or 6.7</td>
-        <td>See <a href="https://www.vmware.com/resources/compatibility/sim/interop_matrix.php#interop&644=&1=">VMware Product Interoperability Matrices</a>.</td>
+        <td><em>n/a</em></td>
     </tr>
 </table>
 
-### <a id="tkgi-nsxt"></a>Scenario 2: Upgrading to TKGI v1.8 and NSX-T v3.0.1
+### <a id="tkgi-vsphere"></a>Scenario 2: Upgrading to <%= vars.k8s_runtime_abbr %> v1.8 and vSphere to v7.0
 
-Description
-Table
-
-### <a id="tkgi-nsxt-vsphere"></a>Scenario 3: Upgrading to TKGI v1.8, NSX-T v3.0.1, and vSphere to v7.0
-
-Description
-Table
-
-## <a id="flannel"></a>TKGI on vSphere with Flannel Networking
-
-Description
-
-### <a id="tkgi-only"></a>Scenario 1: Upgrading TKGI to v1.8
-
-Description
-Table
-
-### <a id="tkgi-vsphere"></a>Scenario 2: Upgrading to TKGI v1.8 and vSphere to v7.0
-
-Description
-Table
+<table class="nice">
+<col width="15%">
+<col width="20%">
+<col width="20%">
+<col width="45%">
+    <th>Component</th>
+    <th>Pre-upgrade version</th>
+    <th>Post-upgrade version</th>
+    <th>More information</th>
+    <tr>
+        <td>Ops Manager</td>
+        <td>2.7, 2.8, 2.9</td>
+        <td>2.9</td>
+        <td>Check <a href="https://network.pivotal.io/products/pivotal-container-service/">Tanzu Network</a>
+        for patch compatibility.</td>
+    </tr>
+    <tr>
+        <td><%= vars.k8s_runtime_abbr %></td>
+        <td>1.7</td>
+        <td>1.8</td>
+        <td>See <a href="upgrade-pks.html">Upgrading Enterprise PKS (Flannel Networking)</a>.</td>
+    </tr>
+    <tr>
+        <td>vSphere</td>
+        <td>6.5 or 6.7</td>
+        <td>7.0</td>
+        <td>See <a href="https://www.vmware.com/resources/compatibility/sim/interop_matrix.php#interop&644=&1=">VMware Product Interoperability Matrices</a>.</td>
+    </tr>
+</table>
