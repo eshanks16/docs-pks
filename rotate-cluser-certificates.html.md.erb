@@ -1,0 +1,115 @@
+---
+title: Rotating Certificates for TKGI-Provisioned Clusters
+owner: TKGI
+---
+
+This topic describes how to rotate the `kubo_ca_2018` and `etcd_ca_2018` 
+CA certificates and their leaf certificates for Kubernetes clusters provisioned
+by <%= vars.product_full %> (<%= vars.k8s_runtime_abbr %>).
+
+## <a id="prerequisites"></a>Prerequisites
+
+You must install the following:
+
+* <%= vars.k8s_runtime_abbr %> v1.9 or later
+* Ops Manager v2.9 or later
+
+## <a id="identify"></a>Identify Clusters
+
+## <a id="access"></a>Access Cluster Deployments 
+
+## <a id="rotate"></a>Rotate Certificates
+
+For each cluster you identified in [LINK], complete the following procedure: 
+
+1. Regenerate the `kubo_ca_2018` and `etcd_ca_2018` CA certificates:
+ 	
+ 	```
+    maestro regenerate ca --name /p-bosh/service-instance_CLUSTER-UUID/etcd_ca_2018
+    maestro regenerate ca --name /p-bosh/service-instance_CLUSTER-UUID/kubo_ca_2018
+    ```
+    
+    Where `CLUSTER-UUID` is the cluster UUID. You retrieved the UUID in [LINK].
+ 
+1. Mark the latest version of each CA certificate as transitional:
+    
+    ```
+    maestro update-transitional latest --name /p-bosh/service-instance_CLUSTER-UUID/etcd_ca_2018
+    maestro update-transitional latest --name /p-bosh/service-instance_CLUSTER-UUID/kubo_ca_2018
+    ```
+    
+    Where `CLUSTER-UUID` is the cluster UUID that you used to regenerate
+    the `kubo_ca_2018` and `etcd_ca_2018` CA certificates.
+
+1. Redeploy the cluster: 
+    
+    1. Download the latest cluster deployment manifest:
+
+        ```
+        bosh -d service-instance_CLUSTER-UUID manifest > PATH-TO-DEPLOYMENT-MANIFEST
+        ```
+
+        Where:
+        * `CLUSTER-UUID` is the cluster UUID.
+        * `PATH-TO-DEPLOYMENT-MANIFEST` is the location where you want to save
+        the cluster deployment manifest. For example, `/tmp/manifest.yml`.
+
+    1. Deploy the cluster:
+
+        ```
+        bosh -d service-instance_CLUSTER-UUID deploy PATH-TO-DEPLOYMENT-MANIFEST
+        ```
+
+        Where:
+        * `CLUSTER-UUID` is the cluster UUID.
+        * `PATH-TO-DEPLOYMENT-MANIFEST` is the location where you saved
+        the cluster deployment manifest.
+
+1. Mark the signing version of each CA certificate as transitional:
+ 
+    ```
+    maestro update-transitional signing --name /p-bosh/service-instance_CLUSTER-UUID/etcd_ca_2018
+    maestro update-transitional signing --name /p-bosh/service-instance_CLUSTER-UUID/kubo_ca_2018
+    ```
+
+    Where `CLUSTER-UUID` is the cluster UUID.
+    This command also removes the transitional flag from the latest version of the
+    CA certificates.
+
+1. Regenerate leaf certificates signed by `kubo_ca_2018` and `etcd_ca_2018`:
+    
+    ```
+    maestro regenerate leaf --signed-by /p-bosh/service-instance_CLUSTER-UUID/etcd_ca_2018
+    maestro regenerate leaf --signed-by /p-bosh/service-instance_CLUSTER-UUID/kubo_ca_2018
+    ```
+    
+    Where `CLUSTER-UUID` is the cluster UUID.
+
+1. Redeploy the cluster:
+
+    ```
+    bosh -d service-instance_CLUSTER-UUID manifest > PATH-TO-DEPLOYMENT-MANIFEST
+    bosh -d service-instance_CLUSTER-UUID deploy PATH-TO-DEPLOYMENT-MANIFEST
+    ```
+
+    See step 3 above for more information about `bosh manifest` and
+    `bosh deploy`.
+
+1. Remove the transitional flag:
+	
+    ```
+    maestro update-transitional remove --name /p-bosh/service-instance_CLUSTER-UUID/etcd_ca_2018
+    maestro update-transitional remove --name /p-bosh/service-instance_CLUSTER-UUID/kubo_ca_2018
+    ```
+
+    Where `CLUSTER-UUID` is the cluster UUID.
+
+1. Redeploy the cluster:
+
+    ```
+    bosh -d service-instance_CLUSTER-UUID manifest > PATH-TO-DEPLOYMENT-MANIFEST
+    bosh -d service-instance_CLUSTER-UUID deploy PATH-TO-DEPLOYMENT-MANIFEST
+    ```
+
+    See step 3 above for more information about `bosh manifest` and
+    `bosh deploy`.
