@@ -14,12 +14,12 @@ You must install the following:
 * <%= vars.k8s_runtime_abbr %> v1.9 or later
 * Ops Manager v2.9 or later
 
-## <a id="identify"></a>Retrieve Cluster UUID
+## <a id="identify"></a>Retrieve the Cluster UUID
 
 This section describes how to retrieve the universally unique identifier (UUID)
 of a <%= vars.k8s_runtime_abbr %>-provisioned Kubernetes cluster.
-You will use this UUID in [Access Maestro CLI](#access)
-and [Rotate Certificates](#rotate) below.
+You will use this UUID in [Access CredHub Maestro in the Ops Manager VM](#access)
+and [Rotate the Certificates](#rotate) below.
 
 To retrieve the UUID of a <%= vars.k8s_runtime_abbr %>-provisioned Kubernetes
 cluster:
@@ -27,7 +27,8 @@ cluster:
 1. Log in to <%= vars.k8s_runtime_abbr %>. For instructions, see
 [Logging in to <%= vars.product_short %>](login.html).
 1. To view the list of your deployed clusters, run `tkgi clusters`.
-For example:
+
+    For example:
 
     <pre class="terminal">
     $ tkgi clusters
@@ -39,14 +40,53 @@ For example:
 1. In the output of the `tkgi clusters` command,
 locate your target cluster and record its UUID. If you want to rotate the `kubo_ca_2018`
 and `etcd_ca_2018` CA certificates for multiple clusters,
-locate the clusters in the output and record their UUIDs.
-1. Proceed to [Access Maestro CLI](#access) below.
+locate all your target clusters in the output and record their UUIDs.
+1. Proceed to [Access CredHub Maestro in the Ops Manager VM](#access) below.
 
-## <a id="access"></a>Access Maestro CLI
+## <a id="access"></a>Access CredHub Maestro in the Ops Manager VM
 
-1. SSH into Ops Manager VM.
-1. Set BOSH environment variables.
-1. Set CredHub environment variables.
+This section describes how to access the Maestro CLI in the Ops Manager VM,
+identify your Kubernetes cluster deployments,
+and then check certificate expiration dates using the Maestro CLI.
+
+1. SSH into the Ops Manager VM. For instructions, see
+[Log in to the Ops Manager VM with SSH](https://docs.pivotal.io/platform/2-9/customizing/trouble-advanced.html#ssh)
+in the Ops Manager documentation.
+1. Set the BOSH command line and CredHub environment variables on the
+Ops Manager VM.
+    1. To set the BOSH environment variables,
+    follow the instructions in
+    [Set the BOSH Environment Variables on the Ops Manager VM](https://docs.pivotal.io/platform/2-9/customizing/trouble-advanced.html#export-bosh-envs)
+    in the Ops Manager documentation.
+
+        For example:
+
+        <pre class="terminal">
+        $ export BOSH_CLIENT=ops_manager \
+        BOSH_CLIENT_SECRET=example_secret \
+        BOSH_CA_CERT=/var/tempest/workspaces/default/root_ca_certificate \
+        BOSH_ENVIRONMENT=10.0.16.5 bosh
+        </pre>
+
+    1. To set the CredHub environment variables, export the following variables:
+        * `CREDHUB_SERVER` is the URL of the BOSH Director CredHub server.
+        This should be `BOSH_ENVIRONMENT:8844`.
+        * `CREDHUB_CLIENT` is the name of the CredHub client.
+        This is the same as `BOSH_CLIENT`.
+        * `CREDHUB_SECRET` is the CredHub client secret.
+        This is the same as `BOSH_CLIENT_SECRET`.
+        * `CREDHUB_CA_CERT` is the path or value of the CredHub trusted CA certificate.
+        This is the same as `BOSH_CA_CERT`.
+
+        For example:
+
+        <pre class="terminal">
+        export CREDHUB_SERVER=10.0.16.5:8844 \
+        CREDHUB_CLIENT=ops_manager \
+        CREDHUB_SECRET=example_secret \
+        CREDHUB_CA_CERT=/var/tempest/workspaces/default/root_ca_certificate
+        </pre>
+
 1. Identify the Kubernetes cluster deployments for which you want to rotate
 the certificates:
 
@@ -58,9 +98,10 @@ the certificates:
     `service-instance_`. For example,
     `service-instance_ae681cd1-7ff4-4661-b12c-49a5b543f16f`, where
     `ae681cd1-7ff4-4661-b12c-49a5b543f16f` is the cluster UUID you retrieved
-    in [Retrieve Cluster UUID](#identify) above.
+    in [Retrieve the Cluster UUID](#identify) above.
 
-1. To check certificate expiration dates for a Kubernetes cluster, run:
+1. To check certificate expiration dates for a
+<%= vars.k8s_runtime_abbr %>-provisioned Kubernetes cluster, run:
    
     ```
     maestro list --expires-within TIME-PERIOD --deployment-name service-instance_CLUSTER-UUID
@@ -71,15 +112,15 @@ the certificates:
     window. Valid units are `d` for days, `w` for weeks, `m` for months,
     and `y` for years. For example, `1y`.
     * `CLUSTER-UUID` is the cluster UUID you retrieved in
-    [Retrieve Cluster UUID](#identify) above.
+    [Retrieve the Cluster UUID](#identify) above.
 
-1. Proceed to [Rotate Certificates](#rotate) below.
+1. Proceed to [Rotate the Certificates](#rotate) below.
 
-## <a id="rotate"></a>Rotate Certificates
+## <a id="rotate"></a>Rotate the Certificates
 
 This section describes how to rotate the
 `kubo_ca_2018` and `etcd_ca_2018` CA certificates and their leaf certificates.
-For each cluster you identified in [Retrieve Cluster UUID](#identify) above,
+For each cluster you recorded in [Retrieve the Cluster UUID](#identify) above,
 complete the following procedure: 
 
 1. Regenerate the `kubo_ca_2018` and `etcd_ca_2018` CA certificates:
@@ -90,7 +131,7 @@ complete the following procedure:
     ```
     
     Where `CLUSTER-UUID` is the cluster UUID. You retrieved the UUID in
-    [Retrieve Cluster UUID](#identify) above.
+    [Retrieve the Cluster UUID](#identify) above.
  
 1. Mark the latest version of each CA certificate as transitional:
     
@@ -99,8 +140,7 @@ complete the following procedure:
     maestro update-transitional latest --name /p-bosh/service-instance_CLUSTER-UUID/kubo_ca_2018
     ```
     
-    Where `CLUSTER-UUID` is the cluster UUID that you used to regenerate
-    the `kubo_ca_2018` and `etcd_ca_2018` CA certificates.
+    Where `CLUSTER-UUID` is the same cluster UUID as in the step above.
 
 1. Redeploy the cluster: 
     
