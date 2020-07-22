@@ -1,5 +1,5 @@
 ---
-title: Rotating Certificates for TKGI-Provisioned Clusters
+title: Rotating Certificates for Kubernetes Clusters
 owner: TKGI
 ---
 
@@ -14,13 +14,73 @@ You must install the following:
 * <%= vars.k8s_runtime_abbr %> v1.9 or later
 * Ops Manager v2.9 or later
 
-## <a id="identify"></a>Identify Clusters
+## <a id="identify"></a>Retrieve Cluster UUID
 
-## <a id="access"></a>Access Cluster Deployments 
+This section describes how to retrieve the universally unique identifier (UUID)
+of a <%= vars.k8s_runtime_abbr %>-provisioned Kubernetes cluster.
+You will use this UUID in [Access Maestro CLI](#access)
+and [Rotate Certificates](#rotate) below.
+
+To retrieve the UUID of a <%= vars.k8s_runtime_abbr %>-provisioned Kubernetes
+cluster:
+
+1. Log in to <%= vars.k8s_runtime_abbr %>. For instructions, see
+[Logging in to <%= vars.product_short %>](login.html).
+1. To view the list of your deployed clusters, run `tkgi clusters`.
+For example:
+
+    <pre class="terminal">
+    $ tkgi clusters
+
+    Name    Plan Name       UUID                                    Status       Action  
+    test    multi-master    ae681cd1-7ff4-4661-b12c-49a5b543f16f    succeeded    CREATE
+    </pre>   
+
+1. In the output of the `tkgi clusters` command,
+locate your target cluster and record its UUID. If you want to rotate the `kubo_ca_2018`
+and `etcd_ca_2018` CA certificates for multiple clusters,
+locate the clusters in the output and record their UUIDs.
+1. Proceed to [Access Maestro CLI](#access) below.
+
+## <a id="access"></a>Access Maestro CLI
+
+1. SSH into Ops Manager VM.
+1. Set BOSH environment variables.
+1. Set CredHub environment variables.
+1. Identify the Kubernetes cluster deployments for which you want to rotate
+the certificates:
+
+    ```
+    bosh deployments
+    ```
+
+    Kubernetes cluster deployment names begin with
+    `service-instance_`. For example,
+    `service-instance_ae681cd1-7ff4-4661-b12c-49a5b543f16f`, where
+    `ae681cd1-7ff4-4661-b12c-49a5b543f16f` is the cluster UUID you retrieved
+    in [Retrieve Cluster UUID](#identify) above.
+
+1. To check certificate expiration dates for a Kubernetes cluster, run:
+   
+    ```
+    maestro list --expires-within TIME-PERIOD --deployment-name service-instance_CLUSTER-UUID
+    ```
+
+    Where:
+    * `TIME-PERIOD` is the time period for which you want to check the expiry
+    window. Valid units are `d` for days, `w` for weeks, `m` for months,
+    and `y` for years. For example, `1y`.
+    * `CLUSTER-UUID` is the cluster UUID you retrieved in
+    [Retrieve Cluster UUID](#identify) above.
+
+1. Proceed to [Rotate Certificates](#rotate) below.
 
 ## <a id="rotate"></a>Rotate Certificates
 
-For each cluster you identified in [LINK], complete the following procedure: 
+This section describes how to rotate the
+`kubo_ca_2018` and `etcd_ca_2018` CA certificates and their leaf certificates.
+For each cluster you identified in [Retrieve Cluster UUID](#identify) above,
+complete the following procedure: 
 
 1. Regenerate the `kubo_ca_2018` and `etcd_ca_2018` CA certificates:
  	
@@ -29,7 +89,8 @@ For each cluster you identified in [LINK], complete the following procedure:
     maestro regenerate ca --name /p-bosh/service-instance_CLUSTER-UUID/kubo_ca_2018
     ```
     
-    Where `CLUSTER-UUID` is the cluster UUID. You retrieved the UUID in [LINK].
+    Where `CLUSTER-UUID` is the cluster UUID. You retrieved the UUID in
+    [Retrieve Cluster UUID](#identify) above.
  
 1. Mark the latest version of each CA certificate as transitional:
     
